@@ -20,13 +20,29 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+// Define endpoint for fcc challenge
+app.get("/api/:date", function (req, res) {
+  let dateStr = req.params.date
+  let date;
+  if (dateStr.match(/^[0-9]+$/)) {
+    date = new Date(parseInt(req.params.date))
+  } else {
+    date = new Date(dateStr)
+  }
 
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+  if (date == 'Invalid Date') {
+    res.json({"error": "Invalid Date"})
+  }
+
+  res.json({"unix": date.getTime(), "utc": date.toUTCString()});
 });
 
+// Empty API calls should return the current date
+app.get("/api", function (req, res) {
+  let date = new Date()
 
+  res.json({"unix": date.getTime(), "utc": date.toUTCString()});
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
